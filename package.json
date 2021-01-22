@@ -1,14 +1,14 @@
 {
   "name": "yo-test-bot",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "start": "node index.js"
   },
   "author": "yohfee <yohfee@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "discord.js": "~11.1.0",
-    "node-opus": "~0.2.6",
+    "@discordjs/opus": "~0.3.3",
+    "discord.js": "~12.5.1",
     "openjtalk": "~0.1.6"
   }
 }
