@@ -10,7 +10,11 @@ const {
 } = process.env;
 
 const rules = [
+  ({ content }) => content === '/unk' && 'うんこちんちん',
   ({ content }) => content === '/neko' && 'にゃーん',
+  ({ content }) => content === '/ng' && 'ナイスガンジー',
+  ({ content }) => content === '/mmm' && 'まんめんみ',
+  ({ content }) => content === '/oo' && 'おっぱいおっぱい',
   ({ content }) => content
 ];
 
