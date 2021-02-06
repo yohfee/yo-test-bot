@@ -42,13 +42,13 @@ client.on("message", async message => {
     if (message.member?.voice?.channel) {
       try {
         _connection = await message.member.voice.channel.join();
-        message.reply('I have successfully connected to the channel!');
+        message.channel.send('おじゃまします');
       } catch (e) {
         console.error(e);
-        message.reply('I could not connect to the channel...');
+        message.channel.send('なんか入れなかった');
       }
     } else {
-      message.reply('You need to join a voice channel first!');
+      message.channel.send('ボイスチャンネルに入ってから呼んでな');
     }
 
     return;
