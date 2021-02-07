@@ -15,6 +15,9 @@ const rules = [
   ({ content }) => content === '/ng' && 'ナイスガンジー',
   ({ content }) => content === '/mmm' && 'まんめんみ',
   ({ content }) => content === '/oo' && 'おっぱいおっぱい',
+  ({ content }) => content === '/c' && 'カムイン',
+  ({ content }) => content === '/sv' && 'サービスサービス',
+  ({ content }) => content === '/moon' && 'つきにかわっておしおきよ',
   ({ content }) => content
 ];
 
