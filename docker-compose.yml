@@ -9,3 +9,6 @@ services:
       - VOCAL_PITCH=200
       - VOCAL_VOICE=mazzo.htsvoice
     tty: true
+    volumes:
+      - .:/app
+      -  /app/node_modules
