@@ -18,6 +18,10 @@ const rules = [
   ({ content }) => content === '/c' && 'カムイン',
   ({ content }) => content === '/sv' && 'サービスサービス',
   ({ content }) => content === '/moon' && 'つきにかわっておしおきよ',
+  ({ content }) => content === '/ops' && 'おっぱいのぺらぺらソース',
+  ({ content }) => content === '/uns' && 'うんこだ、捨てろ',
+  ({ content }) => content === '/sm' && 'ごめんね素直じゃなくて',
+  ({ content }) => content === '/bye' && 'じゃあの',
   ({ content }) => content
 ];
 
