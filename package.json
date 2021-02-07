@@ -2,7 +2,8 @@
   "name": "yo-test-bot",
   "version": "0.0.2",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "daemon": "nodemon index.js"
   },
   "author": "yohfee <yohfee@gmail.com>",
   "license": "MIT",

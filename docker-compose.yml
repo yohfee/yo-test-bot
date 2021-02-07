@@ -9,6 +9,7 @@ services:
       - VOCAL_PITCH=200
       - VOCAL_VOICE=mazzo.htsvoice
     tty: true
+    command: nodemon index.js
     volumes:
       - .:/app
       -  /app/node_modules
