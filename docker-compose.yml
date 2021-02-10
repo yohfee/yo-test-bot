@@ -7,7 +7,7 @@ services:
       - BOT_ID=$BOT_ID
       - BOT_TOKEN=$BOT_TOKEN
       - VOCAL_PITCH=200
-      - VOCAL_VOICE=mazzo.htsvoice
+      - VOCAL_VOICE=mei_happy.htsvoice
     tty: true
     command: nodemon index.js
     volumes:
