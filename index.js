@@ -8,6 +8,7 @@ const {
 } = process.env;
 
 const rules = [
+  ({ content, author: { username } }) => username === 'まさほふ' && content === '/unk' && '最強のうんこちんちん',
   ({ content }) => content === '/unk' && 'うんこちんちん',
   ({ content }) => content === '/neko' && 'にゃーん',
   ({ content }) => content === '/ng' && 'ナイスガンジー',
