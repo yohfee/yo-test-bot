@@ -67,7 +67,7 @@ client.on("message", async message => {
     return message.reply("pong");
   }
 
-  if (!message.guild) return;
+  if (!message.guild || message.author.bot) return;
 
   if (message.content === "/join") {
     if (message.member?.voice?.channel) {
