@@ -4,7 +4,6 @@ services:
     build:
       context: .
     environment: 
-      - BOT_ID=$BOT_ID
       - BOT_TOKEN=$BOT_TOKEN
       - VOCAL_PITCH=200
       - VOCAL_VOICE=mei_happy.htsvoice

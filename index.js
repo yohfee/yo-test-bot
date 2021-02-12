@@ -3,7 +3,6 @@ const Discord = require("discord.js");
 const OpenJTalk = require("openjtalk");
 
 const {
-  BOT_ID,
   BOT_TOKEN,
   VOCAL_VOICE,
   VOCAL_PITCH,
@@ -86,10 +85,6 @@ client.on("message", async message => {
   }
 
   if (_connection) {
-    if (message.author.id === BOT_ID) {
-      return;
-    }
-
     const content = rules.reduce((c, f) => c ? c : f(message), null);
     if (content) {
       vocal._makeWav(content, VOCAL_PITCH, (error, result) => {
