@@ -49,8 +49,6 @@ const rules = [
 
 const random = max => Math.floor(Math.random() * Math.floor(max))
 
-const client = new Discord.Client();
-
 const vocals = fs.readdirSync(path.join(__dirname, 'voices')).map(f => ({
   pitch: 220 + random(60),
   voice: new OpenJTalk({
@@ -60,44 +58,39 @@ const vocals = fs.readdirSync(path.join(__dirname, 'voices')).map(f => ({
 
 const members = {};
 
-client.on("ready", () => {
-  console.log("I am ready!");
-});
+const client = new Discord.Client()
+  .on('ready', () => console.log('I am ready!'))
+  .on('message', async message => {
+    console.debug(message);
 
-client.on("message", async message => {
-  console.log(`Got a message: ${message.content}`);
+    const { guild, author: { id, bot }, content, member } = message;
 
-  if (message.content === "ping") {
-    return message.reply("pong");
-  }
+    console.log(`Got a message: ${content}`);
 
-  if (!message.guild || message.author.bot) return;
+    if (!guild || bot) return;
 
-  const channel = message.member?.voice?.channel;
-  if (channel && channel.joinable) {
-    const connection = client.voice.connections[channel.id] || await channel.join();
+    const channel = member?.voice?.channel;
+    if (channel && channel.joinable) {
+      const connection = client.voice.connections[channel.id] || await channel.join();
 
-    const content = rules.reduce((c, f) => c ? c : f(message), null);
-    if (content) {
-      const { author: { id } } = message;
-      members[id] ||= vocals[random(vocals.length)];
-      const { voice, pitch } = members[id];
+      const text = rules.reduce((c, f) => c ? c : f(message), null);
+      if (text) {
+        members[id] ||= vocals[random(vocals.length)];
+        const { voice, pitch } = members[id];
 
-      voice._makeWav(content, pitch, (error, result) => {
-        if (error) {
-          return console.error(error);
-        }
+        voice._makeWav(text, pitch, (error, result) => {
+          if (error) {
+            return console.error(error);
+          }
 
-        const file = path.join(__dirname, result.wav);
-        console.log(`Start playing: ${file}`);
+          const file = path.join(__dirname, result.wav);
+          console.log(`Start playing: ${file}`);
 
-        const dispatcher = connection.play(file);
-        dispatcher.on('debug', console.debug);
-        dispatcher.on('error', console.error);
-        dispatcher.on('finish', () => fs.unlinkSync(file));
-      });
+          const dispatcher = connection.play(file);
+          dispatcher.on('finish', () => fs.unlinkSync(file));
+        });
+      }
     }
-  }
-});
+  });
 
-client.login(BOT_TOKEN);
+client.login(BOT_TOKEN).catch(console.error);
