@@ -11,5 +11,3 @@ $ BOT_TOKEN=<YOUR_BOT_TOKEN> npm start
 ```
 docker-compose up
 ```
-
-`index.js` を更新するスクリプトをリロードするので、Discordに再接続（ `/join` ）すること。

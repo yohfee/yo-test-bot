@@ -59,7 +59,6 @@ const vocals = fs.readdirSync(path.join(__dirname, 'voices')).map(f => ({
 }));
 
 const members = {};
-let _connection;
 
 client.on("ready", () => {
   console.log("I am ready!");
@@ -74,23 +73,10 @@ client.on("message", async message => {
 
   if (!message.guild || message.author.bot) return;
 
-  if (message.content === "/join") {
-    if (message.member?.voice?.channel) {
-      try {
-        _connection = await message.member.voice.channel.join();
-        message.channel.send('おじゃまします');
-      } catch (e) {
-        console.error(e);
-        message.channel.send('なんか入れなかった');
-      }
-    } else {
-      message.channel.send('ボイスチャンネルに入ってから呼んでな');
-    }
+  const channel = message.member?.voice?.channel;
+  if (channel && channel.joinable) {
+    const connection = client.voice.connections[channel.id] || await channel.join();
 
-    return;
-  }
-
-  if (_connection) {
     const content = rules.reduce((c, f) => c ? c : f(message), null);
     if (content) {
       const { author: { id } } = message;
@@ -105,14 +91,12 @@ client.on("message", async message => {
         const file = path.join(__dirname, result.wav);
         console.log(`Start playing: ${file}`);
 
-        const dispatcher = _connection.play(file);
+        const dispatcher = connection.play(file);
         dispatcher.on('debug', console.debug);
         dispatcher.on('error', console.error);
         dispatcher.on('finish', () => fs.unlinkSync(file));
       });
     }
-  } else {
-    console.log('There is no connection...');
   }
 });
 
