@@ -5,8 +5,6 @@ services:
       context: .
     environment: 
       - BOT_TOKEN=$BOT_TOKEN
-      - VOCAL_PITCH=200
-      - VOCAL_VOICE=mei_happy.htsvoice
     tty: true
     command: nodemon index.js
     volumes:

@@ -2,7 +2,7 @@
 
 ## Usage
 ```sh
-$ BOT_TOKEN=<YOUR_BOT_TOKEN> VOCAL_PITCH=220 VOCAL_VOICE=mazzo.htsvoice npm start
+$ BOT_TOKEN=<YOUR_BOT_TOKEN> npm start
 ```
 
 ## Dockerから使う場合
