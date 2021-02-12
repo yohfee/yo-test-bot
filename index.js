@@ -1,11 +1,10 @@
+const fs = require("fs");
 const path = require("path");
 const Discord = require("discord.js");
 const OpenJTalk = require("openjtalk");
 
 const {
   BOT_TOKEN,
-  VOCAL_VOICE,
-  VOCAL_PITCH,
 } = process.env;
 
 const rules = [
@@ -48,11 +47,18 @@ const rules = [
   ({ content }) => content
 ];
 
-const client = new Discord.Client();
-const vocal = new OpenJTalk({
-  htsvoice: path.join(__dirname, 'voices', VOCAL_VOICE)
-});
+const random = max => Math.floor(Math.random() * Math.floor(max))
 
+const client = new Discord.Client();
+
+const vocals = fs.readdirSync(path.join(__dirname, 'voices')).map(f => ({
+  pitch: 220 + random(60),
+  voice: new OpenJTalk({
+    htsvoice: path.join(__dirname, 'voices', f)
+  }),
+}));
+
+const members = {};
 let _connection;
 
 client.on("ready", () => {
@@ -87,7 +93,11 @@ client.on("message", async message => {
   if (_connection) {
     const content = rules.reduce((c, f) => c ? c : f(message), null);
     if (content) {
-      vocal._makeWav(content, VOCAL_PITCH, (error, result) => {
+      const { author: { id } } = message;
+      members[id] ||= vocals[random(vocals.length)];
+      const { voice, pitch } = members[id];
+
+      voice._makeWav(content, pitch, (error, result) => {
         if (error) {
           return console.error(error);
         }
@@ -98,6 +108,7 @@ client.on("message", async message => {
         const dispatcher = _connection.play(file);
         dispatcher.on('debug', console.debug);
         dispatcher.on('error', console.error);
+        dispatcher.on('finish', () => fs.unlinkSync(file));
       });
     }
   } else {
