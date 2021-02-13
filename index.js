@@ -9,6 +9,7 @@ const {
 
 const rules = [
   ({ content, author: { username } }) => username === 'まさほふ' && content === '/unk' && '最強のうんこちんちん',
+  ({ content }) => content === '/join' && 'チャリできたっ',
   ({ content }) => content === '/unk' && 'うんこちんちん',
   ({ content }) => content === '/neko' && 'にゃーん',
   ({ content }) => content === '/ng' && 'ナイスガンジー',
@@ -45,6 +46,9 @@ const rules = [
   ({ content }) => content === '/jj' && 'オラオラオラオラオラオラオラオラーーーーーッ',
   ({ content }) => content === '/sito' && 'パターン青、シトです',
   ({ content }) => content === '/otu' && 'おつかれちゃーーん',
+  ({ content }) => content === '/mzn' && 'こうべをたれてつくばへ、へいふくせよ',
+  ({ content }) => content === '/mznn' && 'なにがまずい、言ってみろ',
+  ({ content }) => content === '/bl' && 'バイトリーダー',
   ({ content }) => content
 ];
 
