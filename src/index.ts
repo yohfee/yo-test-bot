@@ -1,6 +1,12 @@
-const createBot = require('./createBot');
+import createBot from './createBot';
 
-const rules = [
+const token = process.env.BOT_TOKEN;
+if (!token) {
+  console.log('Environment variable BOT_TOKEN is missing.');
+  process.exit(1);
+}
+
+const bot = createBot(token, [
   ({ content, author: { username } }) => username === 'まさほふ' && content === '/unk' && '最強のうんこちんちん',
   ({ content }) => content === '/join' && 'チャリできたっ',
   ({ content }) => content === '/unk' && 'うんこちんちん',
@@ -43,11 +49,14 @@ const rules = [
   ({ content }) => content === '/mznn' && 'なにがまずい、言ってみろ',
   ({ content }) => content === '/bl' && 'バイトリーダー',
   ({ content }) => content
-];
+]);
 
-const bot = createBot(process.env.BOT_TOKEN, rules);
-
-bot.run().catch(error => {
-  console.error(error);
-  process.exit(1)
-});
+(async () => {
+  try {
+    console.log(await bot.run());
+    process.exit(0);
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+})();
