@@ -6,7 +6,7 @@ services:
     environment: 
       - BOT_TOKEN=$BOT_TOKEN
     tty: true
-    command: nodemon index.js
+    command: npm run daemon
     volumes:
       - .:/app
       -  /app/node_modules
