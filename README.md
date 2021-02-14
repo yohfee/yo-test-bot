@@ -2,7 +2,12 @@
 
 ## Usage
 ```sh
-$ BOT_TOKEN=<YOUR_BOT_TOKEN> npm start
+$ BOT_TOKEN=<YOUR_BOT_TOKEN> yarn start
+```
+
+## Development
+```sh
+$ BOT_TOKEN=<YOUR_BOT_TOKEN> yarn run dev
 ```
 
 ## Dockerから使う場合
