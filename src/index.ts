@@ -60,8 +60,7 @@ const bot = create(token, voices, minPitch, pitchRange, [
 
 (async () => {
   try {
-    console.log(await bot.run());
-    process.exit(0);
+    await bot.run();
   } catch (error) {
     console.error(error);
     process.exit(1);

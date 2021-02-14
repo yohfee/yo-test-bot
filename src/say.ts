@@ -31,7 +31,7 @@ export const create = (voice: string, pitch: number): Say => {
         return reject(error);
       }
 
-      const file = path.join(__dirname, result.wav);
+      const file = path.join(__dirname, '..', result.wav);
       resolve({
         file,
         dispose: () => fs.unlinkSync(file),

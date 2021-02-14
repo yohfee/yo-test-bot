@@ -44,6 +44,6 @@ export const create = (token: string, voices: string[], minPitch: number, pitchR
   });
 
   return {
-    run: () => client.login(token),
+    run: async () => await client.login(token),
   };
 }
