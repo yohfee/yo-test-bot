@@ -1,4 +1,6 @@
-import createBot from './createBot';
+import fs from 'fs';
+import path from 'path';
+import { create } from './bot';
 
 const token = process.env.BOT_TOKEN;
 if (!token) {
@@ -6,7 +8,12 @@ if (!token) {
   process.exit(1);
 }
 
-const bot = createBot(token, [
+const voiceDir = path.join(__dirname, '..', 'voices');
+const voices = fs.readdirSync(voiceDir).map(f => path.join(voiceDir, f));
+const minPitch = 220;
+const pitchRange = 60;
+
+const bot = create(token, voices, minPitch, pitchRange, [
   ({ content, author: { username } }) => username === 'まさほふ' && content === '/unk' && '最強のうんこちんちん',
   ({ content }) => content === '/join' && 'チャリできたっ',
   ({ content }) => content === '/unk' && 'うんこちんちん',
