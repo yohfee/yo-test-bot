@@ -115,5 +115,8 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# IntelliJ
+.idea/
+
 # Generated audio files
 *.wav
