@@ -1,15 +1,16 @@
 import { Client, Message } from 'discord.js';
 import { Say, create as createSay } from './say';
 
-import Rules from '../rules.json';
-const rules : { [key: string]: string } = Rules;
+type RuleResult = string | false;
+
+type Rule = ((message: Message) => RuleResult);
 
 const random = (max: number) => Math.floor(Math.random() * Math.floor(max))
 
 const randomVocal = (voices: string[], minPitch: number, pitchRange: number): Say =>
   createSay(voices[random(voices.length)], minPitch + random(pitchRange));
 
-export const create = (token: string, voices: string[], minPitch: number, pitchRange: number) => {
+export const create = (token: string, voices: string[], minPitch: number, pitchRange: number, rules: Rule[]) => {
   const members: { [id: string]: Say } = {};
 
   const client = new Client().on('message', async message => {
@@ -25,7 +26,7 @@ export const create = (token: string, voices: string[], minPitch: number, pitchR
     if (channel && channel.joinable) {
       const connection = client.voice?.connections.get(channel.id) || await channel.join();
 
-      const text = rules.hasOwnProperty(content) ? rules[content] : content;
+      const text = rules.reduce((result, rule) => result ? result : rule(message), false as RuleResult);
       if (text) {
         console.log(`${username} says "${text}"`);
 
