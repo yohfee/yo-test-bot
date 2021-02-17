@@ -23,12 +23,7 @@ const pitchRange = 60;
 
 const bot = create(token, voices, minPitch, pitchRange, [
   ({content, author: {username}}) => username === 'まさほふ' && content === '/unk' && '最強のうんこちんちん',
-  ({content, author: {username}}) => {
-    return simpleRules.hasOwnProperty(content) && favoritePhrase.hasOwnProperty(username)
-        && simpleRules[content] + ' ' + favoritePhrase[username];
-  },
-  ({content, author: {username}}) => favoritePhrase.hasOwnProperty(username) && content + ' ' + favoritePhrase[username],
-  ({content}) => simpleRules.hasOwnProperty(content) && simpleRules[content],
+  ({ content, author: { username } })  => [simpleRules[content] || content, favoritePhrase[username]].filter(s => s).join(''),
   ({content}) => content
 ]);
 
