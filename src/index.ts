@@ -19,7 +19,9 @@ const pitchRange = 60;
 const bot = create(token, voices, minPitch, pitchRange, [
   ({ content, author: { username } }) => username === 'まさほふ' && content === '/unk' && '最強のうんこちんちん',
   ({ content }) => content === '/yom' && 'おれはおれのせきむをまっとうする', // こっちに書いたルールが優先
-  ({ content }) => simpleRules.hasOwnProperty(content) ? simpleRules[content] : content
+  ({ content }) => simpleRules.hasOwnProperty(content) && simpleRules[content],
+  ({ content }) => content
+
 ]);
 
 (async () => {
