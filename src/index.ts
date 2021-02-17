@@ -1,9 +1,14 @@
 import fs from 'fs';
 import path from 'path';
-import { create } from './bot';
+import {create} from './bot';
 
 import SimpleRules from '../rules.json';
-const simpleRules : { [key: string]: string } = SimpleRules;
+
+const simpleRules: { [key: string]: string } = SimpleRules;
+
+import FavoritePhrases from '../favorite-phrases.json';
+
+const favoritePhrase: { [username: string]: string } = FavoritePhrases;
 
 const token = process.env.BOT_TOKEN;
 if (!token) {
@@ -17,9 +22,9 @@ const minPitch = 220;
 const pitchRange = 60;
 
 const bot = create(token, voices, minPitch, pitchRange, [
-  ({ content, author: { username } }) => username === 'まさほふ' && content === '/unk' && '最強のうんこちんちん',
-  ({ content }) => content === '/yom' && 'おれはおれのせきむをまっとうする', // こっちに書いたルールが優先
-  ({ content }) => simpleRules.hasOwnProperty(content) ? simpleRules[content] : content
+  ({content, author: {username}}) => username === 'まさほふ' && content === '/unk' && '最強のうんこちんちん',
+  ({ content, author: { username } })  => [simpleRules[content] || content, favoritePhrase[username]].filter(s => s).join(''),
+  ({content}) => content
 ]);
 
 (async () => {
