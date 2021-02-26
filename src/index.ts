@@ -8,6 +8,14 @@ if (!token) {
   process.exit(1);
 }
 
+import createPlaySkill from './skills/play';
+const play = (() => {
+  const soundDir = path.join(__dirname, '..', 'sounds');
+  const sounds = fs.readdirSync(soundDir).map(f => path.join(soundDir, f));
+
+  return createPlaySkill(sounds);
+})();
+
 import createSaySkill from './skills/say';
 import SimpleRules from '../rules.json';
 import FavoritePhrases from '../favorite-phrases.json';
@@ -34,7 +42,7 @@ const say = (() => {
   ]);
 })();
 
-const bot = create(token, [say]);
+const bot = create(token, [play, say]);
 
 (async () => {
   try {
