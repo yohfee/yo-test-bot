@@ -1,6 +1,6 @@
 {
   "name": "yo-test-bot",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "scripts": {
     "dev": "ts-node-dev --respawn src/index.ts",
     "start": "tsc && node dist/index.js"
