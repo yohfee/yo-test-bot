@@ -19,9 +19,11 @@ const play = (() => {
 import createSaySkill from './skills/say';
 import SimpleRules from '../rules.json';
 import FavoritePhrases from '../favorite-phrases.json';
+import BukiList from '../buki-list.json';
 const say = (() => {
   const simpleRules: { [key: string]: string } = SimpleRules;
   const favoritePhrase: { [username: string]: string[] } = FavoritePhrases;
+  const bukiList: string[] = BukiList;
 
   const randomChoice = (array: string[]) => array[Math.floor(Math.random() * array.length)];
   const myPhrase = (name: string) => {
@@ -38,6 +40,7 @@ const say = (() => {
 
   return createSaySkill(voices, minPitch, pitchRange, [
     ({ content, author: { username } }) => username === 'まさほふ' && content === '/unk' && '最強のうんこちんちん',
+    ({ content }) => content === '/buki' && `オレは ${randomChoice(bukiList)}でいく`,
     ({ content, author: { username } }) => [simpleRules[content] || content, myPhrase(username)].join('')
   ]);
 })();
