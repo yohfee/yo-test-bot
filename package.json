@@ -8,7 +8,7 @@
   "author": "yohfee <yohfee@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@discordjs/opus": "~0.3.3",
+    "@discordjs/opus": "~0.8.0",
     "discord.js": "~12.5.1",
     "ffmpeg-static": "~4.2.7",
     "openjtalk": "~0.1.6"
