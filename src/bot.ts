@@ -12,5 +12,14 @@ export const create = (token: string, commands: Command[]) => {
 
   return {
     run: async () => await client.login(token),
+
+    stop: () => {
+      client.voice?.connections?.forEach((connection) => {
+        connection.disconnect();
+        connection.channel.leave();
+      });
+
+      client.destroy();
+    },
   };
 }

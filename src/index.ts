@@ -13,6 +13,13 @@ const bot = createBot(config.token, [
   createSayCommand(config.say),
 ]);
 
+["SIGINT", "SIGTERM"].forEach((signal) => {
+  process.on(signal, () => {
+    bot.stop();
+    process.exit(0);
+  });
+});
+
 (async () => {
   try {
     await bot.run();
