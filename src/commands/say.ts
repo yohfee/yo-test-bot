@@ -1,6 +1,6 @@
 import type { Message } from "discord.js";
 import type { Command } from "./command";
-import { Say, create as createSay } from "./say/say";
+import { Vocal, create as createVocal } from "./say/vocal";
 
 export type Config = {
   voices: string[];
@@ -13,11 +13,11 @@ export type Rule = ((message: Message) => string | false);
 
 const random = (max: number) => Math.floor(Math.random() * Math.floor(max))
 
-const randomVocal = (voices: string[], minPitch: number, pitchRange: number): Say =>
-  createSay(voices[random(voices.length)], minPitch + random(pitchRange));
+const randomVocal = (voices: string[], minPitch: number, pitchRange: number): Vocal =>
+  createVocal(voices[random(voices.length)], minPitch + random(pitchRange));
 
 export const create = ({ voices, minPitch, pitchRange, rules }: Config): Command => {
-  const members: { [id: string]: Say } = {};
+  const members: { [id: string]: Vocal } = {};
 
   return async (message) => {
     const { client, guild, author: { id, bot }, member } = message;

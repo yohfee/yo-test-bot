@@ -13,14 +13,14 @@ type OpenJTalk = {
   _makeWav: (text: string, pitch: number, callback: MakeWavCallback) => void
 };
 
-type SayResult = {
+type VocalResult = {
   file: string
   dispose: () => void
 };
 
-export type Say = (text: string) => Promise<SayResult>;
+export type Vocal = (text: string) => Promise<VocalResult>;
 
-export const create = (voice: string, pitch: number): Say => {
+export const create = (voice: string, pitch: number): Vocal => {
   const vocal: OpenJTalk = new OpenJTalk({
     htsvoice: voice,
   });
