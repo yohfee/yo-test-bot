@@ -11,22 +11,29 @@ export const create = ({ host, match }: Config): Command => {
 
   return async (message) => {
     const prompt = match(message);
-    if (prompt) {
-      const res = await fetch(`${host}/sdapi/v1/txt2img`, {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt, steps: 20 }),
+    if (!prompt) return false;
+
+    const res = await fetch(`${host}/sdapi/v1/txt2img`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        prompt,
+        steps: 20,
+      }),
+    });
+
+    if (res.status === 200) {
+      const { images: [data] } = await res.json();
+
+      await message.channel.send({
+        files: [{ attachment: Buffer.from(data, "base64") }],
       });
-      if (res.status === 200) {
-        const { images: [data] } = await res.json();
-        await message.channel.send({ files: [{ attachment: Buffer.from(data, "base64") }] });
-      } else {
-        console.warn(await res.text());
-      }
-      return true;
+    } else {
+      console.warn(await res.text());
     }
-    return false;
+
+    return true;
   };
 };
