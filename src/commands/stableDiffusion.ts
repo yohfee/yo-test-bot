@@ -1,14 +1,16 @@
+import type { Message } from "discord.js";
 import type { Command } from "./command";
 
 export type Config = {
   host?: string;
+  match: (message: Message) => string | undefined;
 };
 
-export const create = ({ host }: Config): Command => {
+export const create = ({ host, match }: Config): Command => {
   if (!host) return () => Promise.resolve(false);
 
   return async (message) => {
-    const prompt = message.content.match(/^(.+)画像はこちら。?$/)?.[1];
+    const prompt = match(message);
     if (prompt) {
       const res = await fetch(`${host}/sdapi/v1/txt2img`, {
         method: "post",

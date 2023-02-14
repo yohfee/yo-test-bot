@@ -37,6 +37,7 @@ const config: Config = {
   },
   stableDiffusion: {
     host: process.env.SD_HOST,
+    match: ({ content }) => content.match(/^(.+)画像はこちら。?$/)?.[1],
   },
 };
 
