@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import type { Command } from "./command";
-import { Say, create as createSay } from '../say';
+import { Say, create as createSay } from './say/say';
 
 type RuleResult = string | false;
 
