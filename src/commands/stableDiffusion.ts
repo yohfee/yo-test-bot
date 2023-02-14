@@ -1,6 +1,10 @@
 import type { Command } from "./command";
 
-export const create = (host?: string): Command => {
+export type Config = {
+  host?: string;
+};
+
+export const create = ({ host }: Config): Command => {
   if (!host) return () => Promise.resolve(false);
 
   return async (message) => {
