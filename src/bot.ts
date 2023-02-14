@@ -1,6 +1,8 @@
 import { Client, Message } from 'discord.js';
 import { Say, create as createSay } from './say';
 
+export type Command = (message: Message) => Promise<boolean>;
+
 type RuleResult = string | false;
 
 type Rule = ((message: Message) => RuleResult);
@@ -10,19 +12,9 @@ const random = (max: number) => Math.floor(Math.random() * Math.floor(max))
 const randomVocal = (voices: string[], minPitch: number, pitchRange: number): Say =>
   createSay(voices[random(voices.length)], minPitch + random(pitchRange));
 
-export const create = (token: string, voices: string[], minPitch: number, pitchRange: number, rules: Rule[], sdHost: string | undefined) => {
-  const members: { [id: string]: Say } = {};
-
-  const client = new Client().on('message', async message => {
-    console.debug(message);
-
-    const { guild, author: { id, bot, username }, content, member } = message;
-
-    if (!guild || bot) return;
-
-    console.log(`${username} inputs "${content}"`);
-
-    const prompt = content.match(/^(.+)画像はこちら。?$/)?.[1];
+const createStableDiffusionCommand = (sdHost?: string): Command => {
+  return async (message) => {
+    const prompt = message.content.match(/^(.+)画像はこちら。?$/)?.[1];
     if (sdHost && prompt) {
       const res = await fetch(`${sdHost}/sdapi/v1/txt2img`, {
         method: "post",
@@ -34,11 +26,24 @@ export const create = (token: string, voices: string[], minPitch: number, pitchR
       if (res.status === 200) {
         const { images: [data] } = await res.json();
         await message.channel.send({ files: [{ attachment: Buffer.from(data, "base64") }] });
-        return;
       } else {
         console.warn(await res.text());
       }
+      return true;
     }
+    return false;
+  };
+};
+
+const createSayCommand = (voices: string[], minPitch: number, pitchRange: number, rules: Rule[]): Command => {
+  const members: { [id: string]: Say } = {};
+
+  return async (message) => {
+    const { client, guild, author: { id, bot, username }, content, member } = message;
+
+    if (!guild || bot) return false;
+
+    console.log(`${username} inputs "${content}"`);
 
     const channel = member?.voice.channel;
     if (channel && channel.joinable) {
@@ -57,7 +62,24 @@ export const create = (token: string, voices: string[], minPitch: number, pitchR
         } catch (error) {
           console.error(error);
         }
+        return true;
       }
+    }
+    return false;
+  }
+};
+
+export const create = (token: string, voices: string[], minPitch: number, pitchRange: number, rules: Rule[], sdHost: string | undefined) => {
+  const commands = [
+    createStableDiffusionCommand(sdHost),
+    createSayCommand(voices, minPitch, pitchRange, rules),
+  ];
+
+  const client = new Client().on('message', async message => {
+    console.debug(message);
+
+    for (const command of commands) {
+      if (await command(message)) break;
     }
   });
 
