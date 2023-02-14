@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 import {create} from './bot';
+import { create as createSayCommand } from "./commands/say";
+import { create as createStableDiffusionCommand } from "./commands/stableDiffusion";
 
 import SimpleRules from '../rules.json';
 const simpleRules: { [key: string]: string } = SimpleRules;
@@ -26,17 +28,22 @@ if (!token) {
 }
 
 const sdHost = process.env.SD_HOST;
+const stableDiffusionCommand = createStableDiffusionCommand(sdHost);
 
 const voiceDir = path.join(__dirname, '..', 'voices');
 const voices = fs.readdirSync(voiceDir).map(f => path.join(voiceDir, f));
 const minPitch = 220;
 const pitchRange = 60;
+const sayCommand = createSayCommand(voices, minPitch, pitchRange, [
+  ({ content, author: { username } }) => username === 'まさほふ' && content === '/unk' && '最強のうんこちんちん',
+  ({ content }) => content === '/buki' && `オレは ${randomChoice(bukiList)}でいく`,
+  ({ content, author: { username } }) => [simpleRules[content] || content, myPhrase(username)].join('')
+]);
 
-const bot = create(token, voices, minPitch, pitchRange, [
-  ({content, author: {username}}) => username === 'まさほふ' && content === '/unk' && '最強のうんこちんちん',
-  ({content}) => content === '/buki' && `オレは ${randomChoice(bukiList)}でいく`,
-  ({content, author: {username}}) => [simpleRules[content] || content, myPhrase(username)].join('')
-], sdHost);
+const bot = create(token, [
+  stableDiffusionCommand,
+  sayCommand,
+]);
 
 (async () => {
   try {
