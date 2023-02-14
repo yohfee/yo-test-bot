@@ -1,10 +1,12 @@
 import type { Command } from "./command";
 
-export const create = (sdHost?: string): Command => {
+export const create = (host?: string): Command => {
+  if (!host) return () => Promise.resolve(false);
+
   return async (message) => {
     const prompt = message.content.match(/^(.+)画像はこちら。?$/)?.[1];
-    if (sdHost && prompt) {
-      const res = await fetch(`${sdHost}/sdapi/v1/txt2img`, {
+    if (prompt) {
+      const res = await fetch(`${host}/sdapi/v1/txt2img`, {
         method: "post",
         headers: {
           "Content-Type": "application/json",
