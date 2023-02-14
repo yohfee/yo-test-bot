@@ -25,6 +25,8 @@ if (!token) {
   process.exit(1);
 }
 
+const sdHost = process.env.SD_HOST;
+
 const voiceDir = path.join(__dirname, '..', 'voices');
 const voices = fs.readdirSync(voiceDir).map(f => path.join(voiceDir, f));
 const minPitch = 220;
@@ -34,7 +36,7 @@ const bot = create(token, voices, minPitch, pitchRange, [
   ({content, author: {username}}) => username === 'まさほふ' && content === '/unk' && '最強のうんこちんちん',
   ({content}) => content === '/buki' && `オレは ${randomChoice(bukiList)}でいく`,
   ({content, author: {username}}) => [simpleRules[content] || content, myPhrase(username)].join('')
-]);
+], sdHost);
 
 (async () => {
   try {

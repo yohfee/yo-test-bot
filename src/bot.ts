@@ -10,7 +10,7 @@ const random = (max: number) => Math.floor(Math.random() * Math.floor(max))
 const randomVocal = (voices: string[], minPitch: number, pitchRange: number): Say =>
   createSay(voices[random(voices.length)], minPitch + random(pitchRange));
 
-export const create = (token: string, voices: string[], minPitch: number, pitchRange: number, rules: Rule[]) => {
+export const create = (token: string, voices: string[], minPitch: number, pitchRange: number, rules: Rule[], sdHost: string | undefined) => {
   const members: { [id: string]: Say } = {};
 
   const client = new Client().on('message', async message => {
@@ -21,6 +21,24 @@ export const create = (token: string, voices: string[], minPitch: number, pitchR
     if (!guild || bot) return;
 
     console.log(`${username} inputs "${content}"`);
+
+    const prompt = content.match(/^(.+)画像はこちら。?$/)?.[1];
+    if (sdHost && prompt) {
+      const res = await fetch(`${sdHost}/sdapi/v1/txt2img`, {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ prompt, steps: 20 }),
+      });
+      if (res.status === 200) {
+        const { images: [data] } = await res.json();
+        await message.channel.send({ files: [{ attachment: Buffer.from(data, "base64") }] });
+        return;
+      } else {
+        console.warn(await res.text());
+      }
+    }
 
     const channel = member?.voice.channel;
     if (channel && channel.joinable) {

@@ -1,6 +1,7 @@
 FROM node:15.8.0-buster
 
 ENV BOT_TOKEN $BOT_TOKEN
+ENV SD_HOST $SD_HOST
 
 WORKDIR /app
 
