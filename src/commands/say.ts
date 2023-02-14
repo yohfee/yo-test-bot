@@ -1,6 +1,6 @@
-import { Message } from 'discord.js';
+import type { Message } from "discord.js";
 import type { Command } from "./command";
-import { Say, create as createSay } from './say/say';
+import { Say, create as createSay } from "./say/say";
 
 export type Config = {
   voices: string[];
@@ -9,9 +9,7 @@ export type Config = {
   rules: Rule[];
 };
 
-type RuleResult = string | false;
-
-export type Rule = ((message: Message) => RuleResult);
+export type Rule = ((message: Message) => string | false);
 
 const random = (max: number) => Math.floor(Math.random() * Math.floor(max))
 
@@ -22,32 +20,27 @@ export const create = ({ voices, minPitch, pitchRange, rules }: Config): Command
   const members: { [id: string]: Say } = {};
 
   return async (message) => {
-    const { client, guild, author: { id, bot, username }, content, member } = message;
-
+    const { client, guild, author: { id, bot }, member } = message;
     if (!guild || bot) return false;
 
-    console.log(`${username} inputs "${content}"`);
-
     const channel = member?.voice.channel;
-    if (channel && channel.joinable) {
-      const connection = client.voice?.connections.get(channel.id) || await channel.join();
+    if (!channel?.joinable) return false;
 
-      const text = rules.reduce((result, rule) => result ? result : rule(message), false as RuleResult);
-      if (text) {
-        console.log(`${username} says "${text}"`);
+    const connection = client.voice?.connections.get(channel.id) || await channel.join();
 
-        members[id] ||= randomVocal(voices, minPitch, pitchRange);
+    const text = rules.reduce((result: string | false, rule) => result ? result : rule(message), false);
+    if (!text) return false;
 
-        try {
-          const { file, dispose } = await members[id](text);
-          const dispatcher = connection.play(file);
-          dispatcher.on('finish', dispose);
-        } catch (error) {
-          console.error(error);
-        }
-        return true;
-      }
+    members[id] ||= randomVocal(voices, minPitch, pitchRange);
+
+    try {
+      const { file, dispose } = await members[id](text);
+      const dispatcher = connection.play(file);
+      dispatcher.on("finish", dispose);
+    } catch (error) {
+      console.error(error);
     }
-    return false;
+
+    return true;
   }
 };
